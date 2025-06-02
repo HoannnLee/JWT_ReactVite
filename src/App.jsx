@@ -1,4 +1,4 @@
-import axios from "./assets/utils/axios.customize.js";
+import axios from "./utils/axios.customize";
 import { useEffect } from "react"
 
 
