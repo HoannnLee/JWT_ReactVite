@@ -14,17 +14,17 @@ function Register() {
 
         const res = await createUserAPI(email, password, name);
 
-        if(res){
+        if(res && res.EC === 0 ){
             notification.success({
                 message: 'Đăng ký thành công',
-                description: 'Bạn đã đăng ký tài khoản thành công. Vui lòng đăng nhập để tiếp tục.',
+                description: res.EM,
             })
             navigate('/login')
         }
         else {
             notification.error({
                 message: 'Đăng ký thất bại',
-                description: 'Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng thử lại sau.',
+                description: res?.EM ?? 'Vui lòng thử lại sau.',
             });
         }
 
