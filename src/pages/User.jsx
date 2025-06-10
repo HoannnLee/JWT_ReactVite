@@ -1,6 +1,7 @@
-import { Table } from 'antd';
+import { Descriptions, message, notification, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { getUserAPI } from '../utils/api';
+import { Navigate } from 'react-router-dom';
 
 function User() {
 
@@ -9,9 +10,18 @@ function User() {
     useEffect(()=> {
       const fecthApi = async ()=> {
 
-          const res = await getUserAPI();
-          if(res){
+          const res = await getUserAPI();   
+       
+          
+          if(!res?.message){
             setDataUser(res);
+          }else{
+               
+            notification.error({
+                message: "Unauthorized",
+                description: res.message
+            })
+            // Navigate("/login")
           }
       }
 
@@ -45,7 +55,8 @@ function User() {
         <div>
             <Table 
               style={{ margin: '50px' }} 
-              bordered dataSource={dataUser} 
+              bordered 
+              dataSource={dataUser} 
               columns={columns} 
               rowKey="_id"
             />
