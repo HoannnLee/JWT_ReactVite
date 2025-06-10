@@ -1,33 +1,39 @@
-
 import { Button, Form, Input, notification } from 'antd';
 import { loginAPI } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
-
-
+import { useContext } from 'react';
+import { AuthContext } from '../components/context/auth.context';
 
 function Login() {
-
     const navigate = useNavigate();
+    const { setAuth } = useContext(AuthContext);
+
     const onFinish = async (values) => {
-
-        const {email, password} = values;
-
+        const { email, password} = values;
         const res = await loginAPI(email, password);
 
-        if(res && res.EC === 0){
-            localStorage.setItem('access_token', res.access_token); 
+        if (res && res.EC === 0) {
+            localStorage.setItem('access_token', res.access_token);
             notification.success({
                 message: 'Đăng nhập thành công',
                 description: 'Bạn đã đăng nhập tài khoản thành công',
-            })
-            navigate('/')
-        }
-        else {
+            });
+            setAuth({
+                isAuthenticated: true,
+                user: {
+                    email: res?.email ?? "",
+                    name: res?.name ?? "" 
+              
+                },
+            });
+            console.log( "email: ",res?.user?.email ,
+                        "name: ", res?.user?.name )
+            navigate('/');
+        } else {
             notification.error({
                 message: 'Đăng nhập thất bại',
                 description: res?.EM ?? 'Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại sau.',
             });
-
         }
 
         console.log('Success:', values);
@@ -38,23 +44,18 @@ function Login() {
     };
 
     return (
-
         <Form
             name="basic"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 ,marginTop: '50px', marginLeft: '20px' }}
+            style={{ maxWidth: 600, marginTop: '50px', marginLeft: '20px' }}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
-            layout='vertical'
+            layout="vertical"
         >
-            <Form.Item
-                label="Email"
-                name="email"
-                rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
-            >
+            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}>
                 <Input />
             </Form.Item>
 
@@ -66,7 +67,7 @@ function Login() {
                 <Input.Password />
             </Form.Item>
 
-            <Form.Item >
+            <Form.Item>
                 <Button type="primary" htmlType="submit">
                     Đăng nhập
                 </Button>
