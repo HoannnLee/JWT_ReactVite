@@ -1,6 +1,7 @@
-import { Button, Form, Input, notification } from 'antd';
+import { Button, Col, Divider, Form, Input, notification, Row } from 'antd';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { loginAPI } from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../components/context/auth.context';
 
@@ -9,7 +10,7 @@ function Login() {
     const { setAuth } = useContext(AuthContext);
 
     const onFinish = async (values) => {
-        const { email, password} = values;
+        const { email, password } = values;
         const res = await loginAPI(email, password);
 
         if (res && res.EC === 0) {
@@ -21,13 +22,11 @@ function Login() {
             setAuth({
                 isAuthenticated: true,
                 user: {
-                    email: res?.email ?? "",
-                    name: res?.name ?? "" 
-              
+                    email: res?.email ?? '',
+                    name: res?.name ?? '',
                 },
             });
-            console.log( "email: ",res?.user?.email ,
-                        "name: ", res?.user?.name )
+            console.log('email: ', res?.user?.email, 'name: ', res?.user?.name);
             navigate('/');
         } else {
             notification.error({
@@ -44,35 +43,57 @@ function Login() {
     };
 
     return (
-        <Form
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600, marginTop: '50px', marginLeft: '20px' }}
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-            layout="vertical"
-        >
-            <Form.Item label="Email" name="email" rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}>
-                <Input />
-            </Form.Item>
+        <Row justify={'center'} style={{ marginTop: '30px' }}>
+            <Col xs={24} md={16} lg={8}>
+                <fieldset
+                    style={{
+                        padding: '15px',
+                        margin: '5px',
+                        border: '1px solid #ccc',
+                        borderRadius: '5px',
+                    }}
+                >
+                    <legend>Đăng Nhập</legend>
 
-            <Form.Item
-                label="Mật khẩu"
-                name="password"
-                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-            >
-                <Input.Password />
-            </Form.Item>
+                    <Form
+                        name='basic'
+                        initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
+                        layout="vertical"
+                    >
+                        <Form.Item
+                            label="Email"
+                            name="email"
+                            rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
 
-            <Form.Item>
-                <Button type="primary" htmlType="submit">
-                    Đăng nhập
-                </Button>
-            </Form.Item>
-        </Form>
+                        <Form.Item
+                            label="Mật khẩu"
+                            name="password"
+                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit">
+                                Đăng nhập
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                    <Link to={"/"}><ArrowLeftOutlined /> Quay lại trang chủ</Link>
+                    <Divider />
+                    <div style={{ textAlign: "center" }}>
+                        Chưa có tài khoản? <Link to={"/register"}>Đăng ký tại đây</Link>
+                    </div>
+
+                </fieldset>
+            </Col>
+        </Row>
     );
 }
 
